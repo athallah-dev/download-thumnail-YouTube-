@@ -1,0 +1,148 @@
+DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTube Thumbnail Downloader</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.container {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 15px;
+  max-width: 500px;
+  margin: auto;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+input {
+  width: 95%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  margin-top: 10px;
+  outline: none;
+}
+
+.thumb {
+  margin-top: 20px;
+  background: #020617;
+  padding: 10px;
+  border-radius: 12px;
+  animation: fadeIn 0.5s ease;
+}
+
+img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.download-btn {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 8px 15px;
+  background: #22c55e;
+  border-radius: 6px;
+  color: white;
+  text-decoration: none;
+}
+
+.info {
+  font-size: 14px;
+  color: #cbd5f5;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(10px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+</style>
+</head>
+
+<body>
+
+<h2>YouTube Thumbnail Downloader 🚀</h2>
+
+<div class="container">
+
+  <p class="info">
+    Welcome to the YouTube Thumbnail Downloader tool.<br><br>
+    This tool allows you to extract and download high-quality thumbnails from any YouTube video instantly.<br><br>
+    
+    <b>How to use:</b><br>
+    1. Paste any YouTube video link into the input field below.<br>
+    2. The thumbnails will automatically appear without clicking any button.<br>
+    3. Click the "Download Image" button to open the image.<br>
+    4. On mobile devices, long-press the image and select "Save Image".<br><br>
+    
+    This tool supports standard videos, short links, and YouTube Shorts.
+  </p>
+
+  <input type="text" id="link" placeholder="Paste YouTube link here...">
+
+  <div id="result"></div>
+
+</div>
+
+<script>
+function getVideoId(url) {
+  try {
+    const u = new URL(url);
+
+    if (u.searchParams.get("v")) return u.searchParams.get("v");
+    if (u.hostname.includes("youtu.be")) return u.pathname.slice(1);
+    if (u.pathname.includes("/shorts/")) return u.pathname.split("/shorts/")[1];
+
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+document.getElementById("link").addEventListener("input", function() {
+  const link = this.value;
+  const id = getVideoId(link);
+
+  if (!id) {
+    document.getElementById("result").innerHTML = "";
+    return;
+  }
+
+  const thumbs = [
+    { url: `https://img.youtube.com/vi/${id}/maxresdefault.jpg`, label: "HD Quality" },
+    { url: `https://img.youtube.com/vi/${id}/hqdefault.jpg`, label: "High Quality" },
+    { url: `https://img.youtube.com/vi/${id}/mqdefault.jpg`, label: "Medium Quality" }
+  ];
+
+  let html = "";
+
+  thumbs.forEach(t => {
+    html += `
+      <div class="thumb">
+        <p>${t.label}</p>
+        <img src="${t.url}"
+             onerror="this.onerror=null; this.src='https://img.youtube.com/vi/${id}/hqdefault.jpg';">
+        <br>
+        <a class="download-btn" href="${t.url}" target="_blank">
+          Download Image
+        </a>
+      </div>
+    `;
+  });
+
+  document.getElementById("result").innerHTML = html;
+});
+</script>
+
+</body>
+</html>
